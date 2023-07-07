@@ -1,5 +1,5 @@
 [package]
-name = "moq-warp"
+name = "moq-transport-quiche"
 description = "Media over QUIC"
 authors = [ "Luke Curley" ]
 repository = "https://github.com/kixelated/moq-rs"
@@ -11,21 +11,19 @@ edition = "2021"
 keywords = [ "quic", "http3", "webtransport", "media", "live" ]
 categories = [ "multimedia", "network-programming", "web-programming" ]
 
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 moq-transport = { path = "../moq-transport" }
-moq-transport-quinn = { path = "../moq-transport-quinn" }
-moq-transport-generic = { path = "../moq-transport-generic" }
 
-tokio = "1.27"
-mp4 = "0.13.0"
+# WebTransport support: TODO pin a version when released
+webtransport_quiche = { git = "ssh://git@github.com/francoismichel/webtransport-quiche.git" }
+async_webtransport = { git = "ssh://git@github.com/francoismichel/webtransport-quiche.git" }
+http = "0.2"
+
+tokio = { version = "1.27", features = ["macros"] }
+bytes = "1"
+
+log = "0.4"
 anyhow = "1.0.70"
-log = "0.4" # TODO remove
-
-# QUIC stuff
-quinn = "0.10"
-ring = "0.16.20"
-rustls = "0.21.2"
-rustls-pemfile = "1.0.2"
+thiserror = "1.0.21"

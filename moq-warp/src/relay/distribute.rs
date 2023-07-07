@@ -4,7 +4,7 @@ use tokio::io::AsyncWriteExt;
 use tokio::task::JoinSet; // allows locking across await
 
 use moq_transport::{Announce, AnnounceError, AnnounceOk, Object, Subscribe, SubscribeError, SubscribeOk, VarInt};
-use moq_transport_quinn::SendObjects;
+use moq_transport_generic::SendObjects;
 
 use super::{broker, control};
 use crate::model::{segment, track};

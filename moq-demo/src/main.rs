@@ -25,6 +25,10 @@ struct Cli {
 	/// Use the media file at this path
 	#[arg(short, long, default_value = "media/fragmented.mp4")]
 	media: path::PathBuf,
+
+	/// use quiche instead of quinn
+	#[arg(short, long)]
+	quiche: bool,
 }
 
 #[tokio::main]
@@ -52,7 +56,11 @@ async fn main() -> anyhow::Result<()> {
 		broker,
 	};
 
-	let server = relay::Server::new(config).context("failed to create server")?;
+	let mut server = if args.quiche {
+		moq_warp::relay::Server::new_quiche(config).context("failed to create quiche serve")?
+	} else {
+		moq_warp::relay::Server::new(config).context("failed to create quinn server")?
+	};
 
 	// Run all of the above
 	tokio::select! {

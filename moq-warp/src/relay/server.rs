@@ -8,7 +8,7 @@ use tokio::task::JoinSet;
 
 pub struct Server {
 	// The MoQ transport server.
-	server: moq_transport_quinn::Server,
+	server: moq_transport_generic::GenericServer,
 
 	// The media sources.
 	broker: broker::Broadcasts,
@@ -62,20 +62,22 @@ impl Server {
 		];
 		tls_config.alpn_protocols = alpn;
 
-		let mut server_config = quinn::ServerConfig::with_crypto(sync::Arc::new(tls_config));
-
-		// Enable BBR congestion control
-		// TODO validate the implementation
-		let mut transport_config = quinn::TransportConfig::default();
-		transport_config.keep_alive_interval(Some(time::Duration::from_secs(2)));
-		transport_config.congestion_controller_factory(sync::Arc::new(quinn::congestion::BbrConfig::default()));
-
-		server_config.transport = sync::Arc::new(transport_config);
-		let server = quinn::Endpoint::server(server_config, config.addr)?;
 		let broker = config.broker;
 
-		let server = moq_transport_quinn::Server::new(server);
 		let tasks = JoinSet::new();
+
+		let server = moq_transport_generic::GenericServer::new_quinn(tls_config, config.addr)?;
+
+		Ok(Self { server, broker, tasks })
+	}
+
+	// Create a new quiche server
+	pub fn new_quiche(config: ServerConfig) -> anyhow::Result<Self> {
+		let broker = config.broker;
+
+		let tasks = JoinSet::new();
+
+		let server = moq_transport_generic::GenericServer::new_quiche(config.cert.to_str().unwrap(), config.key.to_str().unwrap(), config.addr)?;
 
 		Ok(Self { server, broker, tasks })
 	}

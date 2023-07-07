@@ -1,9 +1,9 @@
 use anyhow::Context;
+use moq_transport_generic::Connect;
 
 use super::{broker, contribute, control, distribute};
 
 use moq_transport::{Role, SetupServer, Version};
-use moq_transport_quinn::Connect;
 
 pub struct Session {
 	// Split logic into contribution/distribution to reduce the problem space.

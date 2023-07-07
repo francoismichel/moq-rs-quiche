@@ -1,5 +1,5 @@
 [package]
-name = "moq-warp"
+name = "moq-transport-generic"
 description = "Media over QUIC"
 authors = [ "Luke Curley" ]
 repository = "https://github.com/kixelated/moq-rs"
@@ -15,16 +15,18 @@ categories = [ "multimedia", "network-programming", "web-programming" ]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+bytes = "1"
+thiserror = "1.0.21"
+log = "0.4"
+anyhow = "1.0.70"
+
 moq-transport = { path = "../moq-transport" }
 moq-transport-quinn = { path = "../moq-transport-quinn" }
-moq-transport-generic = { path = "../moq-transport-generic" }
+moq-transport-quiche = { path = "../moq-transport-quiche" }
 
-tokio = "1.27"
-mp4 = "0.13.0"
-anyhow = "1.0.70"
-log = "0.4" # TODO remove
+tokio = { version = "1.27", features = ["macros"] }
 
-# QUIC stuff
+# quinn stuff
 quinn = "0.10"
 ring = "0.16.20"
 rustls = "0.21.2"
